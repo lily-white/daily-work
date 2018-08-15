@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>wave</title>
+    <style type="text/css">
+    	#canvas {
+    		width: 200px;
+    		height: 200px;
+    		border-radius: 50%;
+    		position: absolute;
+    		top: 100px;
+    		left: 100px;
+    		background-color: pink;
+    	}
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <button onclick="minus()">-</button>
+  </body>
+  <script type="text/javascript">
+  	var canvas = document.getElementById('canvas');
+  	var ctx = canvas.getContext('2d');
+
+  	var step = 0; //初始角度
+  	var lines = ["rgba(0,222,255, 0.2)",
+               "rgba(157,192,249, 0.2)",
+               "rgba(0,168,255, 0.2)"];
+    var ratio = 0.9;
+
+  	//画水波充满位置
+  	function fillWave() {
+  		step++;
+  		for (var i = lines.length - 1; i >= 0; i--) {
+  			//角度转弧度
+	  		var angle = (step + 45*i) * Math.PI / 180;
+	  		//水波高度的变化
+	  		var deltaHeight = Math.sin(angle) * 16;
+	  		var deltaHeightRight = Math.cos(angle) * 16;
+	  		var height = canvas.height * (1-ratio);
+
+	  		ctx.fillStyle = lines[i];
+		  	ctx.beginPath();
+		  	ctx.moveTo(0, height + deltaHeight);
+		  	// ctx.lineTo(canvas.width, canvas.height/2 + deltaHeightRight);
+		  	ctx.bezierCurveTo(canvas.width/2 - 20, height + deltaHeight - 16, canvas.width/2 + 20, height + deltaHeightRight - 16, canvas.width, height);
+		  	ctx.lineTo(canvas.width, canvas.height);
+		  	ctx.lineTo(0, canvas.height);
+		  	ctx.lineTo(0, height + deltaHeight);
+		  	ctx.closePath();
+		  	ctx.fill();
+  		}
+  		
+  		
+  	}
+
+  	window.requestAnimFrame = (function () {
+  		return window.requestAnimationFrame ||
+  			   window.webkitRequestAnimationFrame || 
+  			   window.mozRequestAnimationFrame ||
+  			   function (callback) {
+  			   		window.setTimeout(callback, 1000/60);
+  			   }
+  	})();
+
+  	function loop() {
+  		ctx.clearRect(0, 0, canvas.width, canvas.height);
+  		fillWave();
+  		window.requestAnimFrame(loop);
+  	}
+
+  	loop();
+
+  	function minus() {
+  		ratio = ratio - 0.1;
+  	}
+  </script>
+</html>
