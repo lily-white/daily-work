@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>randomCircle</title>
+    <style type="text/css">
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    	#canvas {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        position: absolute;
+        top: 200px;
+        left: -40px;
+        background-color: pink;
+      }
+      .point {
+        background-color: orange;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        position: absolute;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <div id="points"></div>
+  </body>
+  <script type="text/javascript">
+  	var array = [{id:1, count: 0.02},{id:2, count: 0.02},{id:3, count: 0.02},{id:4, count: 0.02}];
+    var points = [];
+    var r = 50;
+
+    function preparePoint() {
+      for (var i = array.length - 1; i >= 0; i--) {
+        const point = getPoint();
+        array[i].x = point.x;
+        array[i].y = point.y;
+      }
+    }
+
+    function getPoint() {
+      var point = randomPoint(document.body.clientWidth - r, document.body.clientHeight - r);
+      if(testAvailabel(point)) {
+        points.push(point);
+        return point;
+      } else {
+        return getPoint();
+      }
+    }
+
+    function randomPoint(width, height) {
+      const x = parseInt(Math.random() * width);
+      const y = 100 + parseInt(Math.random() * (height - 100));
+console.log(x,y);
+      return {x: x, y: y};
+    }
+
+    function testOverlay(pointA, pointB) {
+      const gapX = Math.abs(pointA.x - pointB.x);
+      const gapY = Math.abs(pointA.y - pointB.y);
+      const distance = Math.sqrt(gapX * gapX + gapY * gapY);
+
+      return distance > r * 2; 
+    }
+
+    function testAvailabel(newPoint) {
+      let flag = true;
+
+      //avoid canvas
+      if(newPoint.y > (200-r) && newPoint.y < 400) {
+          if(newPoint.x < 160) {
+            flag = false;
+            return flag;
+          }
+      }
+
+      for (var i = points.length - 1; i >= 0; i--) {
+        if(!testOverlay(points[i], newPoint)) {
+          flag = false;
+          break;
+        }
+      }
+      return flag;
+    }
+
+    function layPoint() {
+      preparePoint();
+      let template = '<div class="point" style="top: POINTYpx; left: POINTXpx;">TXT</div>';
+      let arr = [];
+      for (var i = array.length - 1; i >= 0; i--) {
+        arr.push(template.replace('POINTX', array[i].x).replace('POINTY', array[i].y).replace('TXT', array[i].count));
+      }
+      document.getElementById('points').innerHTML = arr.join('');
+    }
+
+    layPoint();
+  </script>
+</html>
