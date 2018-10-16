@@ -1,0 +1,10 @@
+<!--packageBattle/components/circle/circle.wxml-->
+<view class='circle-wrapper'>
+  <view class='wrapper right'>
+    <view class='circle right-circle' style='transform: rotate({{rightDeg}}deg)'></view>
+  </view>
+  <view class='wrapper left'>
+    <view class='circle left-circle' style='transform: rotate({{leftDeg}}deg)'></view>
+  </view>
+  <view class='count'>{{10-count}}</view>
+</view>
